@@ -1,4 +1,5 @@
 export default async (req, res) => {
+  const api_url = "http://13.230.48.220/graphql"
 
   const QUERY_RECENT_POSTS = `
   query RecentPosts() {
@@ -15,7 +16,7 @@ export default async (req, res) => {
 `;
 
 
-  const data = await fetch( process.env.WORDPRESS_API_URL, {
+  const data = await fetch( api_url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

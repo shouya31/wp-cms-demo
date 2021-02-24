@@ -1,4 +1,5 @@
 export default async (req, res) => {
+  const api_url = "http://13.230.48.220/graphql"
   const { query: {slug} } = req;
 
   const QUERY_SINGLE_POST = `
@@ -11,7 +12,7 @@ export default async (req, res) => {
   `;
 
   const data = await fetch(
-    process.env.WORDPRESS_API_URL,
+    api_url,
     {
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
