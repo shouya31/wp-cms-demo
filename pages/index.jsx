@@ -1,13 +1,10 @@
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function Home() {
-  const router = useRouter();
-  const { query : { slug } } = router;
   const { data, error } = useSWR(`/api/sample-page`, fetcher);
 
   if(error) return <div>error...</div>
@@ -26,4 +23,46 @@ export default function Home() {
 
     </div>
   )
+}
+
+export async function getStaticProps({ params }) {
+  console.log(params)
+
+  return{
+    props: {
+      slug: params.slug,
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  const QUERY_ALL_PAGES = `
+    query AllPages() {
+      pages {
+        edges {
+          node {
+            uri
+          }
+        }
+      }
+    }
+  `;
+
+
+  const allPages = await fetch( process.env.WORDPRESS_API_URL, {
+    headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    body: JSON.stringify({
+      query: QUERY_ALL_PAGES,
+    })
+  });
+
+  const json = await allPages.json()
+
+  console.log(json)
+
+  return{
+    allPages,
+    fallback :true
+  }
 }
